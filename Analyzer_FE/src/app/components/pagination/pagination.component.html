@@ -1,0 +1,15 @@
+<div class="pagination">
+  <button (click)="prev()" [disabled]="pageNumber === 1">Prev</button>
+
+  <button
+    *ngFor="let p of pages"
+    class="page-btn"
+    [ngClass]="{ active: p === pageNumber, ellipsis: p === '…' }"
+    [disabled]="p === '…'"
+    (click)="changePage(p)"
+  >
+    {{ p }}
+  </button>
+
+  <button (click)="next()" [disabled]="pageNumber === totalPages">Next</button>
+</div>

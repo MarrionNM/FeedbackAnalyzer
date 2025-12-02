@@ -1,0 +1,52 @@
+.page-container {
+  max-width: 700px;
+}
+
+.label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  border: 1px solid var(--gray-300);
+  background: var(--gray-50);
+  outline: none;
+  transition: 0.2s;
+  margin-bottom: 10px;
+
+  &:focus {
+    border-color: var(--primary);
+    background: white;
+  }
+
+  &.textarea {
+    resize: vertical;
+    min-height: 110px;
+  }
+}
+
+.alert {
+  padding: 0.9rem 1.1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+
+  &.success {
+    background: var(--green-50);
+    color: var(--green-600);
+  }
+
+  &.error {
+    background: var(--red-50);
+    color: var(--red-600);
+  }
+}
+
+.cta-btn {
+  width: 20%;
+  justify-content: center;
+}

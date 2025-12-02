@@ -1,0 +1,74 @@
+<div class="page-container">
+  <button class="back-btn" (click)="goBack()">← Back</button>
+  <h2 class="title">Feedback Details</h2>
+
+  <app-loader *ngIf="loading"></app-loader>
+
+  <div class="alert error" *ngIf="error">{{ error }}</div>
+
+  <div class="card" *ngIf="!loading && feedback">
+    <div class="section">
+      <p class="label">Submitted</p>
+      <p class="value">{{ feedback.createdAt | date : "medium" }}</p>
+    </div>
+
+    <div class="section">
+      <p class="label">Feedback</p>
+      <p class="value">{{ feedback.text }}</p>
+    </div>
+
+    <div class="section" *ngIf="feedback.email">
+      <p class="label">Email</p>
+      <p class="value">{{ feedback.email }}</p>
+    </div>
+
+    <!-- Analysis -->
+    <div class="analysis-card" *ngIf="feedback.analysis">
+      <h3>AI Analysis</h3>
+
+      <div class="row">
+        <p class="label small">Sentiment</p>
+        <span
+          class="pill sentiment-{{ feedback.analysis.sentiment.toLowerCase() }}"
+        >
+          {{ feedback.analysis.sentiment }}
+        </span>
+      </div>
+
+      <div class="row">
+        <p class="label small">Priority</p>
+        <span
+          class="pill priority-{{ feedback.analysis.priority.toLowerCase() }}"
+        >
+          <app-tag
+            [text]="feedback.analysis.priority"
+            type="priority"
+          ></app-tag>
+        </span>
+      </div>
+
+      <div class="section">
+        <p class="label small">Summary</p>
+        <p>{{ feedback.analysis.summary }}</p>
+      </div>
+
+      <div class="section">
+        <p class="label small">Next Action</p>
+        <p>{{ feedback.analysis.nextAction }}</p>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="tags-section" *ngIf="feedback.tags?.length">
+      <p class="label">Tags</p>
+
+      <div class="tags">
+        <app-tag
+          *ngFor="let t of feedback.tags"
+          [text]="t"
+          type="tag"
+        ></app-tag>
+      </div>
+    </div>
+  </div>
+</div>

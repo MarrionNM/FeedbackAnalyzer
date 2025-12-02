@@ -1,0 +1,43 @@
+<div class="page-container">
+  <button class="back-btn" (click)="goBack()">← Back</button>
+
+  <h2 class="title">Submit Feedback</h2>
+
+  <div class="card">
+    <!-- Success Message -->
+    <div class="alert success" *ngIf="success">
+      Feedback submitted successfully!
+    </div>
+
+    <!-- Error Message -->
+    <div class="alert error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <!-- Form -->
+    <form (ngSubmit)="submit()">
+      <label class="label">Your Feedback *</label>
+      <textarea
+        [(ngModel)]="text"
+        name="text"
+        rows="5"
+        class="input textarea"
+        placeholder="Tell us what we can improve..."
+      ></textarea>
+
+      <label class="label">Email (optional)</label>
+      <input
+        [(ngModel)]="email"
+        name="email"
+        type="email"
+        class="input"
+        placeholder="Enter email for follow-up (optional)"
+      />
+
+      <button class="cta-btn" type="submit" [disabled]="loading">
+        <ng-container *ngIf="!loading">Submit</ng-container>
+      </button>
+      <app-loader *ngIf="loading"></app-loader>
+    </form>
+  </div>
+</div>

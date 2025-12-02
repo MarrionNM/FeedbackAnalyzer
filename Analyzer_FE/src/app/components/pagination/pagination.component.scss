@@ -1,0 +1,33 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+
+  button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--gray-400);
+    background: var(--gray-100);
+    cursor: pointer;
+    min-width: 40px;
+    text-align: center;
+
+    &.active {
+      background: var(--blue-500);
+      color: white;
+      border-color: var(--blue-500);
+    }
+
+    &.ellipsis {
+      background: transparent;
+      border: none;
+      cursor: default;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+  }
+}

@@ -1,0 +1,90 @@
+.page-container {
+  max-width: 800px;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.section {
+  margin-bottom: 10px;
+
+  .label {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin-bottom: 4px;
+  }
+
+  .value {
+    font-size: 15px;
+  }
+}
+
+.analysis-card {
+  margin-top: 5px;
+  padding: 15px;
+  border-radius: 15px;
+  background: var(--primary-light);
+
+  h3 {
+    margin-bottom: 12px;
+    font-size: 18px;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+}
+
+.pill {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: white;
+}
+
+.sentiment-positive {
+  background: var(--green-500);
+}
+
+.sentiment-neutral {
+  background: var(--yellow-400);
+}
+
+.sentiment-negative {
+  background: var(--red-400);
+}
+
+.priority-high {
+  background: var(--red-400);
+}
+
+.priority-medium {
+  background: var(--yellow-500);
+}
+
+.priority-low {
+  background: var(--green-500);
+}
+
+.tags-section {
+  margin-top: 20px;
+}
+
+.tags {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: var(--gray-100);
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 13px;
+}

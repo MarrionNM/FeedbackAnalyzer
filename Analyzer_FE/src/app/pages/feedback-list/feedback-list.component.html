@@ -1,0 +1,61 @@
+<div class="page-container">
+  <!-- Header -->
+  <div class="header-row">
+    <h2>Feedback</h2>
+    <button class="cta-btn" routerLink="/create">
+      <span>+</span> Add Feedback
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-wrapper elevated">
+    <app-filters (changed)="onFiltersChanged($event)"></app-filters>
+  </div>
+
+  <!-- Loader -->
+  <app-loader *ngIf="loading"></app-loader>
+
+  <!-- Empty -->
+  <div class="empty" *ngIf="!loading && feedbacks.length === 0">
+    <p>No feedback data found</p>
+  </div>
+
+  <!-- List -->
+  <div class="list">
+    <div
+      class="item"
+      *ngFor="let feedback of feedbacks"
+      (click)="openFeedbackDetails(feedback.id)"
+    >
+      <div class="left">
+        <p class="text">{{ feedback.text }}</p>
+        <p class="date">{{ feedback.createdAt | date }}</p>
+
+        <!-- Tags -->
+        <div class="tags">
+          <app-tag
+            *ngFor="let t of feedback.tags"
+            [text]="t"
+            type="tag"
+          ></app-tag>
+        </div>
+      </div>
+
+      <!-- Priority -->
+      <app-tag
+        *ngIf="feedback.analysis?.priority"
+        [text]="feedback.analysis.priority"
+        type="priority"
+      >
+      </app-tag>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+
+  <app-pagination
+    [pageNumber]="pageNumber"
+    [totalPages]="totalPages"
+    (pageChanged)="onPageChanged($event)"
+  ></app-pagination>
+</div>

@@ -1,0 +1,34 @@
+<div class="filters-container">
+  <!-- Search Section -->
+  <div class="search-row">
+    <input
+      type="text"
+      [(ngModel)]="Search"
+      placeholder="Search feedback (enter a full statement)..."
+    />
+    <button class="search-btn" (click)="submitSearch()">Search</button>
+  </div>
+
+  <!-- Tag Filter -->
+  <div class="filter-group">
+    <label>Tag</label>
+    <select [(ngModel)]="selectedTag" (change)="onFilterChange()">
+      <option value="">All Tags</option>
+      <option *ngFor="let tag of tags" [value]="tag.id">
+        {{ tag.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Sentiment Filter -->
+  <div class="filter-group">
+    <label>Sentiment</label>
+    <select [(ngModel)]="selectedSentiment" (change)="onFilterChange()">
+      <option value="">All Sentiments</option>
+      <option *ngFor="let sentiment of sentiments">{{ sentiment }}</option>
+    </select>
+  </div>
+
+  <!-- Clear -->
+  <button class="clear-btn" (click)="clearFilters()">Clear</button>
+</div>
