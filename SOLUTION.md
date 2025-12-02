@@ -1,229 +1,217 @@
-AI-Powered Feedback Analysis Platform
+# AI-Powered Feedback Analysis Platform
 
-Full-Stack Implementation Using .NET 8, Angular 18, PostgreSQL, and OpenAI GPT-4o-mini
+## 1. Overview
 
-1. Overview
+This project implements an end-to-end feedback analysis system.
+Users submit feedback, the backend performs AI-driven analysis (summary, sentiment, priority, tags, next action), and the frontend presents a searchable, filterable, paginated view of all feedback entries.
 
-This project implements a complete end-to-end feedback analysis system.
-Users submit feedback, the backend performs AI-driven analysis (summary, sentiment, tags, priority, next action), and the frontend displays the feedback list with filtering, pagination, and detail views.
+The goal was to build something small but production-minded—showing real separation of concerns, clean architecture practices, and maintainability, while keeping the implementation straightforward for a take-home assignment.
 
-The solution is intentionally production-minded, focusing on clean architecture, testability, modularity, and resilience while remaining simple enough for a take-home exercise.
+## 2. Architecture Overview
 
-2. Architecture Overview
-   High-Level Flow
-   Frontend (Angular)
-   ↓
-   POST /api/feedback
-   ↓
-   Backend (.NET 8 API)
-   ↓
-   AI Service → OpenAI GPT-4o-mini + Embeddings
-   ↓
-   PostgreSQL (EF Core)
+High-Level Flow
 
-Layers
+```bash
+Angular Frontend
+↓
+POST /api/feedback
+↓
+.NET 8 Web API
+↓
+AI Service → OpenAI GPT-4o-mini + Embeddings
+↓
+PostgreSQL via EF Core
 
-Presentation: Angular 18 application
+```
 
-Business Logic: .NET 8 Web API with clean separation of concerns
+### Layer Breakdown
 
-Data Access: PostgreSQL using EF Core
+- Frontend (Angular 18) – Forms, list view, detail modal, filtering, reusable components.
 
-AI Analysis: OpenAI GPT-4o-mini + Embedding model
+- Backend (.NET 8) – Controllers, services, repositories, DTOs, validation and middleware.
 
-Cross-cutting Concerns: Validation, error middleware, logging, caching
+- Database (PostgreSQL) – Relational design using EF Core.
 
-3. Backend Design (.NET 8)
-   3.1 Architectural Approach
+- AI Layer (OpenAI) – Structured JSON + vector embeddings.
 
-I used a Clean Architecture style for separation of concerns:
+- Cross-Cutting – Caching, logging with correlation ID, centralized error handling.
 
-Controllers: HTTP input/output
+This structure makes the codebase easy to test, reason about, and evolve.
 
-Services: Business logic + AI integration
+# 3. Backend Design (.NET 8)
 
-Repositories: DB access
+#### 3.1 Architectural Approach
 
-DTOs & Payloads: Strong typing for requests/responses
+I followed a lightweight Clean Architecture pattern:
 
-Validation: FluentValidation
+Controllers: Handle HTTP requests and responses.
 
-Error Middleware: Consistent error shape
+Services: Contain business logic and AI orchestration.
 
-Logging: Correlation ID + request metadata
+Repositories: Abstract database persistence using EF Core.
 
-3.2 Endpoints Implemented
+DTOs: Strict input/output contracts.
+
+Middleware: Error handling + request logging.
+
+Validation: FluentValidation for request models.
+
+This creates clear boundaries between concerns and makes the codebase extensible.
+
+#### 3.2 API Endpoints
+
 Method Endpoint Description
-POST /api/feedback Create feedback + perform synchronous AI analysis
-GET /api/feedback Paginated list with sentiment + tag filters
+POST /api/feedback Creates feedback and performs AI analysis
+GET /api/feedback Paginated list with sentiment/tag filters
 GET /api/feedback/{id} Full record including AI analysis
-3.3 Database (PostgreSQL + EF Core)
 
-I used a relational model because feedback entries have structured, predictable fields and fit well with SQL querying, filtering, and pagination.
+Pagination, validation, filtering, and structured errors are all handled server-side.
 
-Core Model:
+#### 3.3 Database (PostgreSQL + EF Core)
 
-3.4 Semantic Search (Optional Enhancement)
+A relational database is a natural fit because feedback entries have predictable structure, well-defined fields, and require efficient filtering + pagination.
 
-For demonstration, I generated embeddings using text-embedding-3-large and stored them directly on the feedback row.
+#### 3.4 Semantic Search (Optional Feature)
 
-In a full production system, I would move embeddings to a separate vector table or a vector DB (like pgvector) to support scalable ANN search.
+I stored embeddings on the Feedback row for demo simplicity.
 
-4. AI Integration
-   4.1 Provider
+In production, I would:
 
-I selected OpenAI due to:
+- Use pgvector
+- Create a separate feedback_vectors table
+- Add approximate nearest-neighbor indexing
 
-Mature embeddings support
+### 4. AI Integration
 
-Reliable JSON responses
+#### 4.1 Provider Choice
 
-Cost-effective models (GPT-4o-mini)
+I selected OpenAI for:
 
-Clean .NET SDK support
+- Strong embedding model support
+- Reliable structured JSON responses
+- Affordable models (GPT-4o-mini)
+- Official .NET SDK that integrates cleanly
 
-4.2 AI Models
+#### 4.2 Models Used
 
-GPT-4o-mini → structured analysis (summary, tags, sentiment, nextAction, priority)
+- GPT-4o-mini → full analysis (summary, sentiment, tags, nextAction, priority)
+- text-embedding-3-large → high-quality semantic vector
 
-text-embedding-3-large → semantic vector generation
+#### 4.3 Call Pattern
 
-4.3 Call Pattern
+Per the assignment, the analysis is done synchronously:
 
-As required, analysis is done synchronously inside the POST request:
+```pgsql
+POST → Validate → AI call → Save → Return
+```
 
-POST /api/feedback → AI call → Save → Return
+### 4.4 Caching Strategy
 
-4.4 Caching
+I implemented SHA-256 hashing of the input text as a simple caching mechanism.
 
-I implemented SHA-256 text hashing to cache repeat analyses.
+Why caching over retries?
 
-Rationale:
+- Reduces API cost dramatically
+- Stateless and easy to test
+- Prevents duplicate analysis for identical input
+- More value for this scenario than retry logic
 
-Simple, stateless
+### 4.5 Prompting
 
-More production-minded than retries
+The prompt enforces:
 
-Reduces API costs significantly
+- Strict JSON response
+- Professional, concise tone
+- No echoing of PII
+- 1–5 short noun tags
+- Priority (P0–P3) with consistent logic
 
-Easy to maintain
+Responses are validated before use.
 
-4.5 Prompt Design
+# 5. Frontend (Angular 18)
 
-Prompts instruct the model to return strict JSON with fields.
-Ask model not to echo PII
+### 5.1 Pages Implemented
 
-Force concise and professional language
+- Submit Feedback
+- Feedback List
+- Server-side filters (sentiment, tags)
+- Pagination
+- Priority badges, created date, summary
+- Feedback Detail
 
-Validate & sanitize the resulting JSON
+### 5.2 Reusable Components
 
-5. Frontend (Angular 18)
-   5.1 Pages
+- Tag/Badge
+- Pagination
+- Loader
+- Filter controls
 
-Submit Feedback Page
-Feedback List Page
-Pagination
-Server-side filters: sentiment, tags
-Summaries, created date, priority badges
-Feedback Detail View
+These were designed to scale with more views or future feature additions.
 
-5.2 Reusable Components
+### 5.3 Configuration
 
-Tag/Badge Component
+Backend URL is defined in:
 
-Loader Component
+- environment.ts
 
-Filter Component
+# 6. Testing Strategy
 
-5.3 Config
+### Backend
 
-Angular reads backend URL from environment:
+- AI Service Tests
+- Mock OpenAI client
+- Validate JSON parsing
+- Verify error handling for malformed AI responses
+- Controller Tests
+- Happy path create
+- Invalid input → 400 response
+- Repository Tests
+- Filter logic (sentiment, tags)
+- Pagination behavior
 
-environment.ts
-environment.prod.ts
+### Frontend
 
-5.4 State Management
+- Component Tests
+- Submit feedback form
+- Filters updating the list
 
-Component-level state (signals) + service caching.
+Tests focus on user behavior rather than implementation details.
 
-6. Testing Strategy
-   Backend
+# 7. Scaling & Production Considerations
 
-AI Service Tests:
-Mock OpenAI client → validate JSON parsing, error handling
+### 7.1 AI Processing
 
-Controller Tests:
-Successful create + failing validation path
+Synchronous processing works for this exercise, but for real production:
 
-Repository Test:
-Query behavior with filters
+I would move AI analysis to an async background pipeline:
 
-Frontend
+- POST stores record immediately
+- Message goes to SQS or Service Bus
+- Worker performs AI calls
+- Clients poll or receive websocket updates
 
-Component test:
-Submit Feedback form
-Validate loading → success → error flow
+Benefits:
+-Eliminates long request times
 
-Filter component test:
-Tag + sentiment updates list
+- Handles spikes / rate limits cleanly
+- Allows retries without blocking UI
 
-7. Scalability & Production Considerations
-   7.1 AI Processing
+# 8. Diagnostics / Runbook
 
-For production I would move AI analysis to an async background worker:
+AI rate limits or timeouts
 
-Use AWS SQS (simple, scalable, inexpensive)
+- Check cache hit rate
+- Review OpenAI latency logs
+- Reduce prompt size
+- Move analysis to background worker
+- Database connectivity issues
+- Validate connection string
 
-POST request writes record first
+Check Postgres service availability
 
-Worker performs analysis & updates row
-
-Clients poll or receive websockets updates
-
-This prevents long request times and avoids hitting rate limits.
-
-7.2 Semantic Search
-
-For production:
-
-Move vectors to separate pgvector table
-
-My demo stores vectors in the row for simplicity.
-
-8. Diagnostics & Runbook
-   AI Rate Limit / Timeout
-
-Check cache hit rate
-
-Reduce prompt size
-
-Log model latency
-
-Implement SQS worker (future improvement)
-
-Database Issues
-
-Check EF Core connection pooling
-
-Ensure proper AsNoTracking() usage
-
-Validate connection string
-
-Restart Postgres container
-
-General Connectivity
-
-Confirm environment variables
-
-Check backend URL in Angular
-
-Validate Postgres network availability
-
-9. Trade-Off Decisions
-   Decision Rationale
-   .NET 8 + Clean Architecture Clear separation, testability, maintainability
-   PostgreSQL Predictable schema, strong filtering & pagination
-   Synchronous AI processing Required by assignment
-   Caching instead of retries Simpler, more cost-effective
-   Embeddings stored inline Demo simplicity; would use vector DB in prod
-   Angular 18 Reusable UI, TypeScript, strong component ecosystem
+- Inspect EF Core connection pooling
+- Use AsNoTracking() for queries
+- General debugging
+- Verify environment variables
+- Ensure Angular points to correct backend URL
+- Check request IDs in logs to trace failures

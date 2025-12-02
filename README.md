@@ -16,7 +16,7 @@ The system allows users to:
 
 ---
 
-## 🚀 Prerequisites
+## Prerequisites
 
 Make sure the following tools are installed on your machine:
 
@@ -32,7 +32,7 @@ Make sure the following tools are installed on your machine:
 
 ---
 
-# 🛠️ Getting Started
+# Getting Started
 
 All commands assume you are in the **root project folder (`Analyzer`)**.
 
@@ -54,9 +54,7 @@ npm install
 
 ### 3. Configure the environment file
 
-Open:
-
-src/environments/environment.ts
+Open: src/environments/environment.ts
 
 Replace the content with:
 
@@ -85,8 +83,6 @@ Your frontend will be available at:
 cd Analyzer_BE/FeedbackAnalyzer
 ```
 
-cd Analyzer_BE/FeedbackAnalyzer
-
 ### 2. Clean, restore, and build the solution
 
 ```bash
@@ -97,9 +93,7 @@ dotnet build
 
 ### 3. Configure application settings
 
-Open:
-
-FeedbackAnalyzer/appsettings.json
+Open: FeedbackAnalyzer/appsettings.json
 
 Update the following fields:
 
