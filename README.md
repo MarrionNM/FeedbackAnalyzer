@@ -146,11 +146,12 @@ Your backend will be available at:
 ```bash
 Analyzer/
 │
-├── Analyzer_FE/        # Angular frontend
+├── Analyzer_FE/
 │
-├── Analyzer_BE/        # .NET backend API + EF Core
+├── Analyzer_BE/
 │   └── FeedbackAnalyzer/
+|   └── FeedbackAnalyzer.Tests/
 │
 ├── README.md
-└── SOLUTION.md         # (included for assessment documentation)
+└── SOLUTION.md
 ```
